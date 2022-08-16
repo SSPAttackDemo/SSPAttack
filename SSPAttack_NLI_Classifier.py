@@ -939,7 +939,7 @@ def dbattack(fuzz_val, top_k_words, qrs, sample_index, hypotheses,random_text_, 
     random_sim = calc_sim(text_ls, [random_text], -1, sim_score_window, sim_predictor)[0]
     x_t = random_text[:]
     if num_changed == 1:
-        # 如果只改变一个就搜那一个的最佳对抗样本
+
         change_idx = 0
         for i in range(len(text_ls)):
             if text_ls[i] != x_t[i]:
@@ -1001,7 +1001,7 @@ def dbattack(fuzz_val, top_k_words, qrs, sample_index, hypotheses,random_text_, 
             else:
                 x_t = random_text[:]
             wbcount = 0
-            print("回退1次")
+
 
 
         while True:
@@ -1128,9 +1128,9 @@ def dbattack(fuzz_val, top_k_words, qrs, sample_index, hypotheses,random_text_, 
                 qrs += 1
 
             if len(ad_replacement) != 0:
-                # 找出距离最近的替换
+
                 ad_replacement = sorted(ad_replacement, key=lambda x: x[-1])
-                # 从该替换周围去搜索决策边界上的单词
+
                 condi_replacement = ad_replacement[0][0]
                 condi_replacement_idx = word2idx[condi_replacement]
                 ori_word_idx = word2idx[text_ls[synonyms_all[perturb_word_idx][0]]]
@@ -1381,9 +1381,8 @@ def main():
                                                                   batch_size=args.batch_size)
 
         if flag:
-            print("=" * 20, "开始优化", "=" * 20)
+
             print("Attacked ", idx)
-            print("决策边界算法开始")
             new_text, num_changed, random_changed, orig_label, \
             new_label, num_queries, sim, random_sim = dbattack(args.fuzz, args.top_k_words, args.allowed_qrs,
                                                              idx, hypothese,random_text, premise, true_label,orig_label, predictor,
@@ -1404,11 +1403,9 @@ def main():
             db_cr.append(num_changed/len(hypothese))
 
 
+print(f"my sims {np.mean(db_sims)}")
+print(f"my changes rate {np.mean(db_cr)}")
 
-            print("-"*50)
-            print(f"my sims {np.mean(db_sims)}")
-            print(f"my changes rate {np.mean(db_cr)}")
-            print("=" * 100 + "结束优化" + "=" * 100)
 
 if __name__ == "__main__":
     main()
