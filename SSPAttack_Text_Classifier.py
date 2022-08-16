@@ -934,7 +934,7 @@ def main():
         if idx % 20 == 0:
             print(str(idx) + " Samples Done")
 
-        random_text, random_qrs, orig_label_, flag = random_attack(args.top_k_words, text_ls=text, true_label=true_label,
+        random_text, random_qrs, orig_label, flag = random_attack(args.top_k_words, text_ls=text, true_label=true_label,
                                                                   predictor=predictor, word2idx=word2idx,
                                                                   idx2word=idx2word,
                                                                   cos_sim=sim_lis,
