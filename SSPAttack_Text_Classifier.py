@@ -943,7 +943,6 @@ def main():
 
         if flag:
             print("Attacked: " + str(idx+n))
-            random_text = min_random[:]
             new_text, db_num_changed, random_changed, orig_label, \
             new_label, db_num_queries, db_sim, random_sim = dbattack(args.fuzz, orig_label,
                                                                                  args.top_k_words,
