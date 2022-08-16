@@ -393,8 +393,8 @@ l2s = lambda l: " ".join(l)
 def dbattack(fuzz_val, orig_label, top_k_words, qrs, sample_index, text_ls, random_text_, true_label,
              predictor, stop_words_set, word2idx, idx2word, cos_sim, sim_predictor=None,
              import_score_threshold=-1., sim_score_threshold=0.5, sim_score_window=15, synonym_num=50,
-             batch_size=32, embed_func='', n_sample=5,qrs_limits = 1000000):
-    # 当前样本重复优化3次则回退随机步
+             batch_size=32, embed_func='', n_sample=5,qrs_limits = 100000000):
+
     random_text = random_text_[:]
     word_idx_dict = {}
     with open(embed_func, 'r') as ifile:
@@ -472,7 +472,7 @@ def dbattack(fuzz_val, orig_label, top_k_words, qrs, sample_index, text_ls, rand
     best_sim = random_sim
     x_t = random_text[:]
     if num_changed == 1:
-        # 如果只改变一个就搜那一个的最佳对抗样本
+        
         change_idx = 0
         for i in range(len(text_ls)):
             if text_ls[i] != x_t[i]:
@@ -618,7 +618,7 @@ def dbattack(fuzz_val, orig_label, top_k_words, qrs, sample_index, text_ls, rand
                 [float(num) for num in embed_content[word_idx_dict[x_t[idx]]].strip().split()[1:]])
         x_t_adv_embed_matrix = np.asarray(x_t_adv_embed)
 
-        # 计算L2距离
+
         x_t_pert = x_t_adv_embed_matrix - words_perturb_embed_matrix
         x_t_perturb_dist = np.sum((x_t_pert) ** 2, axis=1)
         ne = np.nonzero(np.linalg.norm(x_t_pert, axis=-1))[0].tolist()
@@ -675,9 +675,9 @@ def dbattack(fuzz_val, orig_label, top_k_words, qrs, sample_index, text_ls, rand
                            orig_label, torch.argmax(predictor([best_attack])), qrs, best_sim, random_sim
 
             if len(ad_replacement) != 0:
-                # 找出距离最近的替换
+
                 ad_replacement = sorted(ad_replacement, key=lambda x: x[-1])
-                # 从该替换周围去搜索决策边界上的单词
+
                 condi_replacement = ad_replacement[0][0]
                 condi_replacement_idx = word2idx[condi_replacement]
                 ori_word_idx = word2idx[text_ls[synonyms_all[perturb_word_idx][0]]]
@@ -934,8 +934,6 @@ def main():
         if idx % 20 == 0:
             print(str(idx) + " Samples Done")
 
-        min_random = None
-        orig_label = None
         random_text, random_qrs, orig_label_, flag = random_attack(args.top_k_words, text_ls=text, true_label=true_label,
                                                                   predictor=predictor, word2idx=word2idx,
                                                                   idx2word=idx2word,
@@ -944,9 +942,7 @@ def main():
                                                                   batch_size=args.batch_size)
 
         if flag:
-            print("=" * 25 + "开始优化" + "=" * 25)
             print("Attacked: " + str(idx+n))
-            print('-' * 50)
             random_text = min_random[:]
             new_text, db_num_changed, random_changed, orig_label, \
             new_label, db_num_queries, db_sim, random_sim = dbattack(args.fuzz, orig_label,
@@ -971,9 +967,9 @@ def main():
             pert_rate.append(db_changed_rate)
 
 
-            print(f"my sims {np.mean(sims)}")
-            print(f"my changes rate {np.mean(pert_rate)}")
-            print("=" * 100 + "结束优化" + "=" * 100)
+    print(f"my sims {np.mean(sims)}")
+    print(f"my changes rate {np.mean(pert_rate)}")
+
 
 
 if __name__ == "__main__":
