@@ -550,9 +550,11 @@ def dbattack(fuzz_val, orig_label, top_k_words, qrs, sample_index, text_ls, rand
             prs = get_attack_result(new_texts, predictor, orig_label, batch_size)
             qrs += len(new_texts)
             for new_text,i,pr,sim in zip(new_texts,i_s,prs,semantic_sim_s):
-                if np.sum(pr)>0 and sim>=best_sim:
-                    best_attack = new_text[:]
-                    best_sim = sim
+                if np.sum(pr)>0 
+                    choices.append((i,sim))
+                    if sim>=best_sim:
+                        best_attack = new_text[:]
+                        best_sim = sim
             if len(choices) > 0:
                 choices.sort(key=lambda x: x[1])
                 choices.reverse()
